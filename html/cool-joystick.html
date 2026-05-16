@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>超真实拟态摇杆 CSS 设计实践</title>
+  <style>
+    :root {
+      --bg-top: #f6f8fa;
+      --bg-bottom: #9da4a8;
+      --plate: #c7cfd3;
+      --plate-light: #eef3f5;
+      --rim: #cbd3d7;
+      --pit: #566066;
+      --pit-deep: #20282d;
+      --cap: #cbd4d8;
+      --cap-soft: #edf3f5;
+      --ink: #80888e;
+      --accent: #d29a45;
+      --shadow: rgba(24, 32, 37, .42);
+      --lift: rgba(255, 255, 255, .76);
+      --size: clamp(230px, 24vw, 300px);
+      --shift-x: 0px;
+      --shift-y: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background-image: linear-gradient(0, #f5f8fa, #9da4a8);
+      user-select: none;
+    }
+
+    .stage {
+      position: relative;
+      height: 100vh;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 48px 24px 92px;
+      isolation: isolate;
+    }
+
+    .stage::before,
+    .stage::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+    }
+
+    .stage::before {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .28), transparent 26%),
+        repeating-linear-gradient(0deg,
+          rgba(255, 255, 255, .08) 0,
+          rgba(255, 255, 255, .08) 1px,
+          transparent 1px,
+          transparent 4px);
+      mix-blend-mode: soft-light;
+      opacity: .72;
+    }
+
+    .stage::after {
+      background: linear-gradient(90deg,
+          rgba(255, 255, 255, .28) 0%,
+          transparent 22%,
+          transparent 78%,
+          rgba(255, 255, 255, .26) 100%);
+    }
+
+    .headline {
+      position: absolute;
+      top: clamp(64px, 11vh, 128px);
+      left: 50%;
+      display: flex;
+      gap: clamp(34px, 5vw, 70px);
+      align-items: center;
+      width: min(92vw, 1120px);
+      transform: translateX(-50%);
+      font-size: clamp(42px, 7vw, 88px);
+      font-style: italic;
+      font-weight: 800;
+      letter-spacing: 0;
+      opacity: .86;
+      pointer-events: none;
+    }
+
+    .headline span {
+      flex: 1;
+      filter: drop-shadow(0 2px 1px rgba(255, 255, 255, .58));
+      white-space: nowrap;
+    }
+
+    .headline span:first-child {
+      text-align: left;
+    }
+
+    .headline span:last-child {
+      text-align: right;
+    }
+
+    .joystick-field {
+      position: relative;
+      width: var(--size);
+      height: var(--size);
+      margin-top: 26px;
+    }
+
+    .arrow {
+      position: absolute;
+      color: #9ba2a6;
+      font-size: clamp(34px, 3.2vw, 44px);
+      font-family: "Arial Rounded MT Bold", "PingFang SC", sans-serif;
+      font-weight: 900;
+      line-height: 1;
+      opacity: .78;
+      user-select: none;
+      filter: drop-shadow(0 2px 1px rgba(255, 255, 255, .68));
+      text-shadow:
+        0 -1px 1px rgba(255, 255, 255, .66),
+        0 2px 2px rgba(70, 78, 84, .38);
+      transition: color .22s ease, opacity .22s ease;
+    }
+
+    .arrow-up {
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .arrow-right {
+      top: 50%;
+      right: -40px;
+      transform: translateY(-50%);
+    }
+
+    .arrow-down {
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .arrow-left {
+      top: 50%;
+      left: -40px;
+      transform: translateY(-50%);
+    }
+
+    .joystick-field[data-dir="up"] .arrow-up,
+    .joystick-field[data-dir="right"] .arrow-right,
+    .joystick-field[data-dir="down"] .arrow-down,
+    .joystick-field[data-dir="left"] .arrow-left {
+      color: var(--accent);
+      opacity: 1;
+      filter:
+        drop-shadow(0 2px 1px rgba(255, 255, 255, .72)) drop-shadow(0 4px 5px rgba(126, 82, 26, .22));
+    }
+
+    /* 外圈凹陷 - 斜坡式碗状内凹：上沿处于阴影，下沿被反光提亮 */
+    .around {
+      position: relative;
+      z-index: 1;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        /* 下沿斜坡反光，呈现碗底被光照亮的曲面 */
+        radial-gradient(circle at 50% 96%, rgba(255, 255, 255, .65) 0%, rgba(255, 255, 255, .25) 28%, transparent 58%),
+        /* 上沿阴影，让顶部斜壁沉到暗处 */
+        radial-gradient(circle at 50% 4%, rgba(40, 48, 54, .42) 0%, rgba(40, 48, 54, .18) 32%, transparent 64%),
+        /* 整体由浅到深的基色，配合阴影形成斜坡过渡 */
+        linear-gradient(180deg, #c4ccd0 0%, #d7dde0 50%, #eef2f3 100%);
+      box-shadow:
+        /* 外侧落影，使盘体轻微离地 */
+        0 10px 22px rgba(0, 0, 0, .22),
+        0 2px 4px rgba(0, 0, 0, .14),
+        /* 上方深内阴影：从顶部进入的"斜坡阴影" */
+        inset 0 16px 26px -2px rgba(20, 28, 34, .55),
+        inset 0 6px 14px rgba(20, 28, 34, .35),
+        /* 下方反光内阴影：碗壁下沿被光照射 */
+        inset 0 -10px 20px rgba(255, 255, 255, .6),
+        inset 0 -3px 6px rgba(255, 255, 255, .45),
+        /* 整体加一层柔和的中心暗化，强化向中心凹陷的感觉 */
+        inset 0 0 40px rgba(60, 70, 76, .18);
+    }
+
+    /* 底座 - 深色凹陷座，承接手柄头 */
+    .handle {
+      position: relative;
+      width: 72%;
+      height: 72%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: linear-gradient(0deg, #f5f8fa, #9da4a8);
+      box-shadow:
+        0 0 10px rgba(0, 0, 0, .5),
+        0 10px 10px rgba(0, 0, 0, .2),
+        inset 0 0 16px rgba(0, 0, 0, .85),
+        inset 0 0 24px rgba(0, 0, 0, .75),
+        inset 0 0 48px rgba(0, 0, 0, .2);
+    }
+
+    /* 手柄头 - 斜坡式圆顶凸起：上沿被光照亮，下沿落入阴影（与 around 方向相反） */
+    .button-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 68%;
+      height: 68%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      background:
+        /* 上沿强高光：圆顶顶端被光照亮 */
+        radial-gradient(circle at 50% 6%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, .4) 26%, transparent 58%),
+        /* 下沿阴影：圆顶背光底端 */
+        radial-gradient(circle at 50% 96%, rgba(28, 36, 42, .45) 0%, rgba(28, 36, 42, .18) 30%, transparent 62%),
+        /* 基色：上明下暗，强化凸起的斜坡感（与 around 上暗下明刚好相反） */
+        linear-gradient(180deg, #f6f9fa 0%, #dbe1e4 50%, #9da4a8 100%);
+      box-shadow:
+        /* 外部反光与投影，保持悬浮立体感 */
+        0 -12px 10px rgba(255, 255, 255, .5),
+        0 9px 14px rgba(0, 0, 0, .5),
+        0 19px 8px -2px rgba(0, 0, 0, .2),
+        0 33px 8px rgba(0, 0, 0, .4),
+        /* 顶部内反光：圆顶上半部受光，与 around 顶部的暗阴影相反 */
+        inset 0 14px 22px -3px rgba(255, 255, 255, .72),
+        inset 0 5px 9px rgba(255, 255, 255, .55),
+        /* 底部内阴影：圆顶下半部背光，与 around 底部的反光相反 */
+        inset 0 -14px 22px rgba(20, 28, 34, .42),
+        inset 0 -5px 9px rgba(20, 28, 34, .32);
+      transform: translate(var(--shift-x), var(--shift-y));
+      transition: transform .2s cubic-bezier(.2, .9, .2, 1.15), box-shadow .2s ease;
+      outline: none;
+    }
+
+    .around:hover .button-wrapper {
+      transform: translate(var(--shift-x), var(--shift-y)) scale(1.02);
+    }
+
+    .button-wrapper:active {
+      cursor: grabbing;
+      transition: none;
+    }
+
+    .button-wrapper:focus-visible {
+      box-shadow:
+        0 0 0 5px rgba(210, 154, 69, .24),
+        0 -12px 10px rgba(255, 255, 255, .5),
+        0 9px 14px rgba(0, 0, 0, .5),
+        0 19px 8px -2px rgba(0, 0, 0, .2),
+        0 33px 8px rgba(0, 0, 0, .4),
+        inset 0 14px 22px -3px rgba(255, 255, 255, .72),
+        inset 0 5px 9px rgba(255, 255, 255, .55),
+        inset 0 -14px 22px rgba(20, 28, 34, .42),
+        inset 0 -5px 9px rgba(20, 28, 34, .32);
+    }
+
+    /* 手柄中心 - 按钮顶部内嵌平台，承载防滑圆点 */
+    .inside {
+      position: relative;
+      width: 78%;
+      height: 78%;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 34% 24%, rgba(255, 255, 255, .74) 0 12%, rgba(255, 255, 255, .28) 24%, transparent 42%),
+        radial-gradient(circle at 50% 112%, rgba(255, 255, 255, .82) 0 18%, transparent 48%),
+        linear-gradient(0deg, #f5f8fa 0%, #dce3e6 42%, #aeb8bd 100%);
+      box-shadow:
+        inset 0 3px 5px rgba(255, 255, 255, .58),
+        inset 0 -4px 5px rgba(89, 91, 92, .42),
+        inset 0 0 0 1px rgba(255, 255, 255, .28),
+        0 2px 4px rgba(0, 0, 0, .22);
+    }
+
+    /* 防滑圆点 - 4 颗凸起的金属小圆珠（顶部受光、底部背光） */
+    .dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background:
+        /* 顶部强高光：金属珠受光面 */
+        radial-gradient(circle at 50% 28%, #ffffff 0%, #e6ebee 22%, #aab0b4 62%, #5e6469 100%);
+      box-shadow:
+        /* 外部投影：让圆珠悬浮在 inside 平面之上 */
+        0 1px 1.5px rgba(0, 0, 0, .55),
+        0 2px 3px rgba(0, 0, 0, .3),
+        /* 顶部内反光：强化圆顶受光感 */
+        inset 0 1px 1px rgba(255, 255, 255, .9),
+        /* 底部内阴影：圆珠背光区 */
+        inset 0 -1px 1px rgba(20, 28, 34, .5);
+    }
+
+    .dot:nth-child(1) {
+      top: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .dot:nth-child(2) {
+      bottom: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .dot:nth-child(3) {
+      left: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .dot:nth-child(4) {
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .caption {
+      position: absolute;
+      bottom: clamp(34px, 7vh, 72px);
+      left: 50%;
+      padding: .22em .48em;
+      color: #080b0c;
+      background: rgba(134, 143, 149, .22);
+      font-size: clamp(22px, 4.8vw, 42px);
+      font-weight: 900;
+      letter-spacing: 0;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      backdrop-filter: blur(2px);
+    }
+
+    @media (max-width: 760px) {
+      body {
+        overflow: auto;
+      }
+
+      .stage {
+        height: auto;
+        min-height: 100svh;
+        padding-top: 36px;
+      }
+
+      .headline {
+        position: relative;
+        top: auto;
+        left: auto;
+        flex-direction: column;
+        width: min(92vw, 460px);
+        transform: none;
+        font-size: clamp(28px, 9vw, 36px);
+        gap: 2px;
+        order: -1;
+      }
+
+      .headline span:first-child,
+      .headline span:last-child {
+        text-align: center;
+      }
+
+      .joystick-field {
+        width: var(--size);
+        height: var(--size);
+        margin-top: 0;
+      }
+
+      .arrow-up {
+        top: 7%;
+      }
+
+      .arrow-right {
+        right: 7%;
+      }
+
+      .arrow-down {
+        bottom: 7%;
+      }
+
+      .arrow-left {
+        left: 7%;
+      }
+
+      .caption {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        width: min(92vw, 440px);
+        margin-top: -34px;
+        font-size: clamp(19px, 5.8vw, 24px);
+        white-space: normal;
+        text-align: center;
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .button-wrapper,
+      .arrow {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="stage">
+    <div class="headline" aria-hidden="true">
+      <span>Pure CSS</span>
+      <span>110 Lines</span>
+    </div>
+
+    <section class="joystick-field" data-dir="" aria-label="拟态摇杆演示">
+      <span class="arrow arrow-up" aria-hidden="true">∧</span>
+      <span class="arrow arrow-down" aria-hidden="true">∨</span>
+      <span class="arrow arrow-left" aria-hidden="true">&lt;</span>
+      <span class="arrow arrow-right" aria-hidden="true">&gt;</span>
+
+      <!--外圈凹陷-->
+      <div class="around">
+        <!--底座-->
+        <div class="handle">
+          <!--手柄头-->
+          <div class="button-wrapper" role="button" tabindex="0" aria-label="拖动摇杆，或使用方向键操作">
+            <!--手柄中心-->
+            <div class="inside">
+              <!--防滑圆点-->
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="caption">AI还原的拟态摇杆</div>
+  </main>
+
+  <script>
+    const field = document.querySelector(".joystick-field");
+    const stick = document.querySelector(".button-wrapper");
+    const plate = document.querySelector(".around");
+    // 新结构里 button-wrapper 嵌在 handle 凹槽里，
+    // 限制移动半径，确保手柄头始终处在 handle 凹槽内部。
+    const limitRatio = 0.11;
+    let dragging = false;
+
+    function applyPosition(x, y) {
+      const radius = plate.offsetWidth * limitRatio;
+      const distance = Math.hypot(x, y);
+      const scale = distance > radius ? radius / distance : 1;
+      const nx = x * scale;
+      const ny = y * scale;
+
+      field.style.setProperty("--shift-x", `${nx}px`);
+      field.style.setProperty("--shift-y", `${ny}px`);
+      setDirection(nx, ny, radius);
+    }
+
+    function setDirection(x, y, radius) {
+      if (Math.hypot(x, y) < radius * .34) {
+        field.dataset.dir = "";
+        return;
+      }
+
+      if (Math.abs(x) > Math.abs(y)) {
+        field.dataset.dir = x > 0 ? "right" : "left";
+      } else {
+        field.dataset.dir = y > 0 ? "down" : "up";
+      }
+    }
+
+    function positionFromPointer(event) {
+      const rect = plate.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left - rect.width / 2,
+        y: event.clientY - rect.top - rect.height / 2
+      };
+    }
+
+    stick.addEventListener("pointerdown", (event) => {
+      dragging = true;
+      stick.setPointerCapture(event.pointerId);
+      const point = positionFromPointer(event);
+      applyPosition(point.x, point.y);
+    });
+
+    stick.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      const point = positionFromPointer(event);
+      applyPosition(point.x, point.y);
+    });
+
+    stick.addEventListener("pointerup", () => {
+      dragging = false;
+      applyPosition(0, 0);
+      field.dataset.dir = "";
+    });
+
+    stick.addEventListener("pointercancel", () => {
+      dragging = false;
+      applyPosition(0, 0);
+      field.dataset.dir = "";
+    });
+
+    window.addEventListener("keydown", (event) => {
+      const step = plate.offsetWidth * limitRatio;
+      const keys = {
+        ArrowUp: [0, -step, "up"],
+        ArrowRight: [step, 0, "right"],
+        ArrowDown: [0, step, "down"],
+        ArrowLeft: [-step, 0, "left"]
+      };
+
+      if (!keys[event.key]) return;
+      event.preventDefault();
+      const [x, y, dir] = keys[event.key];
+      field.dataset.dir = dir;
+      applyPosition(x, y);
+    });
+
+    window.addEventListener("keyup", (event) => {
+      if (!event.key.startsWith("Arrow")) return;
+      applyPosition(0, 0);
+      field.dataset.dir = "";
+    });
+  </script>
+</body>
+
+</html>
