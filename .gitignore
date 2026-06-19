@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+.omx/
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
