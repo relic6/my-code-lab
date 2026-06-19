@@ -1,17 +1,39 @@
+import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
+import { designTokens } from '../_shared/tokens';
 
 const Card = () => {
+  const frontRef = useRef<HTMLDivElement>(null);
+  const frame = useRef<number | null>(null);
+
+  // 指针角度驱动全息箔片彩虹流动
+  const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const el = frontRef.current;
+    if (!el) return;
+    const { clientX, clientY } = e;
+    if (frame.current != null) cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => {
+      const r = el.getBoundingClientRect();
+      const px = (clientX - r.left) / r.width;
+      const py = (clientY - r.top) / r.height;
+      el.style.setProperty('--hx', `${px * 100}%`);
+      el.style.setProperty('--hy', `${py * 100}%`);
+      el.style.setProperty('--angle', `${px * 220}deg`);
+    });
+  }, []);
+
   return (
     <StyledWrapper>
-      <div className="card">
+      <div className="card" onPointerMove={onPointerMove}>
         <div className="content">
-          {/* 正面 (Front) - 展示美食卡片 */}
-          <div className="front">
+          {/* 正面 (Front) - 美食卡片 + 全息箔片 */}
+          <div className="front" ref={frontRef}>
             <div className="img">
               <div className="circle circle-1" />
               <div className="circle circle-2" />
               <div className="circle circle-3" />
             </div>
+            <div className="holo" aria-hidden="true" />
             <div className="front-content">
               <small className="badge">Pasta</small>
               <div className="description">
@@ -23,14 +45,12 @@ const Card = () => {
                     <path d="M25,27l-9,-6.75l-9,6.75v-23h18z" />
                   </svg>
                 </div>
-                <p className="card-footer">
-                  30 Mins &nbsp; | &nbsp; 1 Serving
-                </p>
+                <p className="card-footer">30 Mins &nbsp; | &nbsp; 1 Serving</p>
               </div>
             </div>
           </div>
 
-          {/* 背面 (Back) - 展示 Hover Me 彩流光发光卡片 */}
+          {/* 背面 (Back) - 双层反向霓虹流光 */}
           <div className="back">
             <div className="back-content">
               <svg stroke="#ffffff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="50px" width="50px" fill="#ffffff">
@@ -45,9 +65,11 @@ const Card = () => {
       </div>
     </StyledWrapper>
   );
-}
+};
 
 const StyledWrapper = styled.div`
+  ${designTokens}
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,6 +90,7 @@ const StyledWrapper = styled.div`
   }
 
   .content {
+    position: relative;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
@@ -76,11 +99,14 @@ const StyledWrapper = styled.div`
     border-radius: 20px;
   }
 
+  /* 悬浮上托 + 投影变深变散（重量感） */
   .card:hover .content {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateY(-10px);
+    box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
   }
 
-  .front, .back {
+  .front,
+  .back {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -93,11 +119,44 @@ const StyledWrapper = styled.div`
 
   /* 正面样式 */
   .front {
+    --hx: 50%;
+    --hy: 50%;
+    --angle: 110deg;
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     color: white;
     transform: rotateY(0deg);
+  }
+
+  /* 全息箔片层：随指针角度流动的彩虹镭射膜 */
+  .holo {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: 20px;
+    background:
+      radial-gradient(
+        120px circle at var(--hx) var(--hy),
+        rgba(255, 255, 255, 0.35),
+        transparent 60%
+      ),
+      conic-gradient(
+        from var(--angle),
+        rgba(255, 0, 122, 0.35),
+        rgba(0, 229, 255, 0.35),
+        rgba(167, 230, 53, 0.35),
+        rgba(139, 92, 246, 0.35),
+        rgba(255, 0, 122, 0.35)
+      );
+    mix-blend-mode: color-dodge;
+    opacity: 0.45;
+    transition: opacity 0.3s ease;
+  }
+
+  .card:hover .holo {
+    opacity: 0;
   }
 
   .front .img {
@@ -218,21 +277,38 @@ const StyledWrapper = styled.div`
     align-items: center;
   }
 
-  .back::before {
+  /* 双层反向旋转霓虹流光 */
+  .back::before,
+  .back::after {
     position: absolute;
     content: ' ';
     display: block;
-    width: 160px;
-    height: 160%;
+    width: 180px;
+    height: 180%;
+  }
+
+  .back::before {
     background: linear-gradient(
       90deg,
       transparent,
-      #ff9966,
-      #ff5e62,
-      #ff9966,
+      var(--neon-cyan),
+      var(--neon-violet),
+      var(--neon-cyan),
       transparent
     );
     animation: rotation_481 5000ms infinite linear;
+  }
+
+  .back::after {
+    width: 150px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--neon-pink),
+      transparent
+    );
+    animation: rotation_481 7000ms infinite linear reverse;
+    opacity: 0.7;
   }
 
   .back-content {
@@ -251,12 +327,41 @@ const StyledWrapper = styled.div`
     z-index: 1;
   }
 
+  .back-content strong {
+    text-shadow:
+      0 0 6px var(--neon-cyan),
+      0 0 14px var(--neon-violet);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.85;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
   @keyframes rotation_481 {
     0% {
       transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .circle,
+    .back::before,
+    .back::after,
+    .back-content strong {
+      animation: none;
+    }
+    .content {
+      transition-duration: 0.3s;
     }
   }
 `;

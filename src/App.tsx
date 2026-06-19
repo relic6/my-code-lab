@@ -64,9 +64,9 @@ function App() {
 
         <section className="preview-surface" aria-label={`${selected.title} 预览`}>
           {selected.category === 'react' ? (
-            <selected.Component />
+            <selected.Component key={selected.id} />
           ) : (
-            <iframe title={selected.title} src={selected.previewUrl} />
+            <iframe key={selected.id} title={selected.title} src={selected.previewUrl} />
           )}
         </section>
       </section>
