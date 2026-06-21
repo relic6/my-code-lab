@@ -25,12 +25,11 @@ export function useSpring2D(
   const target = useRef({ x: targetX, y: targetY });
   const raf = useRef<number | null>(null);
 
-  target.current = { x: targetX, y: targetY };
-
   useEffect(() => {
+    target.current = { x: targetX, y: targetY };
+
     if (prefersReducedMotion()) {
       state.current = { x: targetX, y: targetY, vx: 0, vy: 0 };
-      setPos({ x: targetX, y: targetY });
       return;
     }
 
@@ -74,8 +73,7 @@ export function useSpring2D(
       if (raf.current != null) cancelAnimationFrame(raf.current);
       raf.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetX, targetY, stiffness, damping, mass]);
 
-  return pos;
+  return prefersReducedMotion() ? { x: targetX, y: targetY } : pos;
 }

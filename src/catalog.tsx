@@ -3,6 +3,9 @@ import Launching from '../components/react/launching';
 import Glass from '../components/react/glass';
 import GlassSwitch from '../components/react/glass-switch';
 import CoolJoystick from '../components/react/cool-joystick';
+import AnimationDelay from '../components/react/animation-delay';
+import TheArk from '../components/react/the-ark';
+import DigitalWall from '../components/react/digital-wall';
 
 export type ReactExample = {
   id: string;
@@ -12,6 +15,8 @@ export type ReactExample = {
   tags: string[];
   sourcePath: string;
   Component: ComponentType;
+  /** 若设置，Lab 会显示「全屏」链接，跳转到该独立路由 */
+  fullscreenPath?: string;
 };
 
 export type HtmlExample = {
@@ -62,5 +67,33 @@ export const examples: Example[] = [
     tags: ['joystick', 'styled-components', 'interaction', 'animation'],
     sourcePath: 'components/react/cool-joystick/CoolJoystick.tsx',
     Component: CoolJoystick,
+  },
+  {
+    id: 'animation-delay',
+    title: 'Animation Delay',
+    category: 'react',
+    description: '简洁的同心圆 ripple loader，通过逐层 animation-delay 做出错峰扩散节奏。',
+    tags: ['loader', 'animation-delay', 'ripple', 'styled-components'],
+    sourcePath: 'components/react/animation-delay/animation-delay.tsx',
+    Component: AnimationDelay,
+  },
+  {
+    id: 'the-ark',
+    title: 'The Ark',
+    category: 'react',
+    description: '受 Dribbble「Board Arca」启发的未来感登船 HUD：纯 React/CSS 动效，自动循环切换 SCAN/ALIGN/BOARD/LAUNCH 四个场景，飞船环、雷达扫描、数据读数全部联动，像 AE 动画。点「全屏」看完整效果。',
+    tags: ['hud', 'sci-fi', 'css-animation', 'motion', 'futuristic'],
+    sourcePath: 'components/react/the-ark/TheArk.tsx',
+    Component: TheArk,
+    fullscreenPath: '/ark',
+  },
+  {
+    id: 'digital-wall',
+    title: 'Digital Wall',
+    category: 'react',
+    description: '受 Dribbble「Digital Walls」(Cosmin Capitanu) 启发的 3D 透视玻璃瓷砖墙：鼠标视差倾斜整面墙，瓷砖逐个入场并在悬浮时沿 Z 轴抬起发光，天气主面板自动轮播城市。纯 React/CSS，自包含无外部图片。',
+    tags: ['bento', '3d', 'glassmorphism', 'parallax', 'dashboard'],
+    sourcePath: 'components/react/digital-wall/DigitalWall.tsx',
+    Component: DigitalWall,
   },
 ];
