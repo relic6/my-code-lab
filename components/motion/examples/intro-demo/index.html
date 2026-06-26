@@ -1,0 +1,64 @@
+<!doctype html>
+<!--
+  intro-demo · 合成示例：aurora 背景 + kinetic 标题（单 composition，单时间轴）
+  演示如何把多个改造模块组合成一条完整片头。渲染：见 components/motion/README.md
+-->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #stage {
+        position: relative; width: 1920px; height: 1080px; overflow: hidden;
+        background: #05070d; display: grid; place-items: center;
+        font-family: "Inter", system-ui, sans-serif; isolation: isolate;
+      }
+      /* —— 背景层（来自 aurora-gradient） —— */
+      .blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.5; mix-blend-mode: screen; will-change: transform; }
+      .b1 { width: 900px; height: 900px; background: #8b5cf6; top: -10%; left: 5%; }
+      .b2 { width: 800px; height: 800px; background: #22d3ee; top: 30%; left: 55%; }
+      .b3 { width: 760px; height: 760px; background: #ec4899; top: 55%; left: 18%; }
+      /* —— 标题层（来自 kinetic-typography） —— */
+      .title { display: flex; gap: 0.06em; font-size: 200px; font-weight: 800; z-index: 2; }
+      .letter { display: inline-block; color: #fff; text-shadow: 0 0 18px #22d3ee, 0 0 36px rgba(34,211,238,0.4); }
+      .vignette { position: absolute; inset: 0; pointer-events: none; z-index: 3;
+        background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%); }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="intro-demo" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+      <h1 class="title" id="title"></h1>
+      <div class="vignette"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      const TEXT = "MY CODE LAB";
+      const titleEl = document.getElementById("title");
+      [...TEXT].forEach((ch) => {
+        const s = document.createElement("span");
+        s.className = "letter";
+        s.textContent = ch === " " ? " " : ch;
+        titleEl.appendChild(s);
+      });
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      // 背景缓慢漂移（贯穿全程）
+      tl.to(".b1", { x: 200, y: 140, duration: 5, ease: "sine.inOut" }, 0);
+      tl.to(".b2", { x: -180, y: 100, duration: 5, ease: "sine.inOut" }, 0);
+      tl.to(".b3", { x: 160, y: -120, duration: 5, ease: "sine.inOut" }, 0);
+      // 标题逐字入场
+      gsap.set(".letter", { y: 60, opacity: 0 });
+      tl.to(".letter", { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.8)",
+        stagger: { each: 0.07, from: "center" } }, 0.3);
+      // 收尾呼吸辉光
+      tl.to(".title", { filter: "brightness(1.3)", duration: 0.6, yoyo: true, repeat: 1 }, 2.4);
+      window.__timelines["intro-demo"] = tl;
+    </script>
+  </body>
+</html>

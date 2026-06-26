@@ -1,0 +1,47 @@
+/*
+ * HyperFrames 动效共享设计令牌
+ * 由 components/react/_shared/tokens.ts 移植，供各动效模板内联或 @import 复用。
+ */
+:root {
+  /* —— 霓虹主色板 —— */
+  --neon-violet: #8b5cf6;
+  --neon-cyan: #22d3ee;
+  --neon-pink: #ec4899;
+  --neon-lime: #a3e635;
+  --neon-amber: #f59e0b;
+
+  /* —— 辉光强度令牌 —— */
+  --glow-sm: 0 0 8px;
+  --glow-md: 0 0 18px;
+  --glow-lg: 0 0 36px;
+
+  /* —— 玻璃材质令牌 —— */
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --glass-stroke: rgba(255, 255, 255, 0.16);
+  --glass-blur: 18px;
+
+  /* —— 缓动（CSS 用；GSAP 模板用 power/back/elastic 对应曲线） —— */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* —— 深空底色 —— */
+  --bg-deep: #05070d;
+}
+
+/* 细颗粒噪声叠层：消除数字塑料感，叠在任意模板最上层 */
+.hf-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 暗角：聚焦中心、增加电影感 */
+.hf-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}

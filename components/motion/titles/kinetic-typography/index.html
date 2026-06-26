@@ -1,0 +1,164 @@
+<!doctype html>
+<!--
+  kinetic-typography · 动态打字标题
+  来源资产：components/react/launching/Launching.tsx（逐字母点亮 + 尾焰 + 冲击波）
+  HyperFrames 契约：paused GSAP 时间轴注册到 window.__timelines["kinetic-typography"]
+  时长：约 3s（90 帧 @30fps）
+-->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        --neon-cyan: #22d3ee;
+        --neon-amber: #f59e0b;
+        --neon-pink: #ec4899;
+        --bg-deep: #05070d;
+        --glow-md: 0 0 18px;
+        --glow-lg: 0 0 36px;
+        --title-color: #ffffff;
+        --accent: var(--neon-cyan);
+      }
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; }
+      #stage {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 45%, rgba(139, 124, 255, 0.18), transparent 55%),
+          linear-gradient(180deg, #121624 0%, var(--bg-deep) 100%);
+        font-family: "Inter", system-ui, sans-serif;
+        isolation: isolate;
+      }
+      .title {
+        display: flex;
+        gap: 0.06em;
+        font-size: 180px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        z-index: 2;
+      }
+      .letter {
+        display: inline-block;
+        color: var(--title-color);
+        text-shadow: var(--glow-md) var(--accent), var(--glow-lg) rgba(34, 211, 238, 0.4);
+      }
+      /* 点火冲击波（从标题中心扩散） */
+      .shockwave {
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 170, 0, 0.55);
+        opacity: 0;
+        z-index: 1;
+      }
+      /* 上升尾焰粒子层 */
+      .embers { position: absolute; bottom: 38%; left: 50%; width: 0; height: 0; z-index: 1; }
+      .ember {
+        position: absolute;
+        width: 12px; height: 12px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #fff, var(--neon-amber) 45%, transparent 72%);
+        opacity: 0;
+      }
+      .hf-noise {
+        position: absolute; inset: 0; pointer-events: none;
+        mix-blend-mode: overlay; opacity: 0.06;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        z-index: 5;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="kinetic-typography"
+      data-start="0"
+      data-duration="3.5"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="shockwave"></div>
+      <div class="embers"></div>
+      <h1 class="title" id="title"></h1>
+      <div class="hf-noise"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      // ——— 参数（可被 AI / 工程文件覆盖：window.__props） ———
+      const props = Object.assign(
+        { text: "LAUNCHING", stagger: 0.08, accent: "#22d3ee", emberCount: 14, seed: 7 },
+        window.__props || {}
+      );
+      document.documentElement.style.setProperty("--accent", props.accent);
+
+      // 确定性 PRNG（不依赖 Math.random，保证逐帧一致）
+      function hfSeeded(seed) {
+        let a = seed >>> 0;
+        return function () {
+          a |= 0; a = (a + 0x6d2b79f5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      const rnd = hfSeeded(props.seed);
+
+      // 构建字母
+      const titleEl = document.getElementById("title");
+      [...props.text].forEach((ch) => {
+        const s = document.createElement("span");
+        s.className = "letter";
+        s.textContent = ch === " " ? " " : ch;
+        titleEl.appendChild(s);
+      });
+
+      // 构建确定性尾焰粒子
+      const embersEl = document.querySelector(".embers");
+      const embers = Array.from({ length: props.emberCount }, () => {
+        const e = document.createElement("i");
+        e.className = "ember";
+        embersEl.appendChild(e);
+        return { el: e, x: (rnd() - 0.5) * 220, delay: rnd() * 0.6, scale: 0.6 + rnd() * 0.9 };
+      });
+
+      // ——— HyperFrames 契约：paused 时间轴 ———
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+      // 字母初始态用 GSAP 设置（避免与 CSS transform 冲突）
+      gsap.set(".letter", { y: 60, opacity: 0 });
+
+      // 冲击波点火（0s）
+      tl.fromTo(".shockwave",
+        { scale: 0.5, opacity: 0.85 },
+        { scale: 2.6, opacity: 0, duration: 1.1, ease: "power2.out" }, 0);
+
+      // 逐字入场（错峰点亮 + 上浮 + 弹性超调）
+      tl.to(".letter", {
+        opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.8)",
+        stagger: { each: props.stagger, from: "center" },
+      }, 0.1);
+
+      // 尾焰上升（确定性 drift）
+      embers.forEach((e) => {
+        gsap.set(e.el, { x: e.x, y: 0, scale: e.scale });
+        tl.fromTo(e.el,
+          { y: 0, opacity: 1, filter: "blur(0px)" },
+          { y: -260, x: e.x * 1.6, opacity: 0, filter: "blur(4px)", scale: 0.2, duration: 1.4, ease: "power1.in" },
+          0.2 + e.delay);
+      });
+
+      // 收尾呼吸辉光
+      tl.to(".title", { filter: "brightness(1.25)", duration: 0.5, yoyo: true, repeat: 1 }, 1.8);
+
+      window.__timelines["kinetic-typography"] = tl;
+    </script>
+  </body>
+</html>

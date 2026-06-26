@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+  aurora-gradient · 极光流光背景
+  来源资产：components/react/glass/Glass.tsx（背景霓虹流光气泡）
+  HyperFrames 契约：paused GSAP 时间轴注册到 window.__timelines["aurora-gradient"]
+-->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; }
+      #stage {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #05070d;
+        filter: saturate(1.1);
+      }
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.55;
+        mix-blend-mode: screen;
+        will-change: transform;
+      }
+      .b1 { width: 900px; height: 900px; background: #8b5cf6; top: -10%; left: 5%; }
+      .b2 { width: 800px; height: 800px; background: #22d3ee; top: 30%; left: 55%; }
+      .b3 { width: 760px; height: 760px; background: #ec4899; top: 55%; left: 18%; }
+      .b4 { width: 640px; height: 640px; background: #a3e635; top: -5%; left: 70%; }
+      .grain {
+        position: absolute; inset: 0; pointer-events: none;
+        mix-blend-mode: overlay; opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="aurora-gradient" data-start="0" data-duration="24" data-width="1920" data-height="1080">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+      <div class="blob b4"></div>
+      <div class="grain"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      const props = Object.assign({ speed: 1, loopSeconds: 12 }, window.__props || {});
+      window.__timelines = window.__timelines || {};
+      const d = props.loopSeconds / props.speed;
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "sine.inOut" } });
+      // 缓慢漂移（用 yoyo + 有限 repeat，满足 HyperFrames 有限时长约束）
+      tl.to(".b1", { x: 240, y: 160, scale: 1.15, duration: d, yoyo: true, repeat: 1 }, 0);
+      tl.to(".b2", { x: -200, y: 120, scale: 1.1, duration: d, yoyo: true, repeat: 1 }, 0);
+      tl.to(".b3", { x: 180, y: -140, scale: 1.2, duration: d, yoyo: true, repeat: 1 }, 0);
+      tl.to(".b4", { x: -160, y: 200, scale: 1.1, duration: d, yoyo: true, repeat: 1 }, 0);
+      window.__timelines["aurora-gradient"] = tl;
+    </script>
+  </body>
+</html>

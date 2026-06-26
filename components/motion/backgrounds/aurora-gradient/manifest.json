@@ -1,0 +1,12 @@
+{
+  "id": "aurora-gradient",
+  "category": "background",
+  "source": "components/react/glass/Glass.tsx",
+  "description": "多色霓虹光斑缓慢漂移的极光渐变背景，可作为任意标题/转场的底层。",
+  "defaultDurationInFrames": 360,
+  "fps": 30,
+  "params": [
+    { "key": "speed", "type": "number", "default": 1, "min": 0.2, "max": 3 },
+    { "key": "loopSeconds", "type": "number", "default": 12, "min": 4, "max": 30, "unit": "s" }
+  ]
+}

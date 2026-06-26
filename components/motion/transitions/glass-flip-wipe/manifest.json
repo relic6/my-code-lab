@@ -1,0 +1,16 @@
+{
+  "id": "glass-flip-wipe",
+  "category": "transition",
+  "source": "components/react/glass-switch/glass-switch.tsx",
+  "description": "毛玻璃卡片 3D 翻转转场，含彩色流光边框与对角高光掠过，连接前后两个画面。",
+  "defaultDurationInFrames": 30,
+  "fps": 30,
+  "params": [
+    { "key": "axis", "type": "enum", "default": "y", "options": ["x", "y"] },
+    { "key": "duration", "type": "number", "default": 1.0, "min": 0.4, "max": 2, "unit": "s" }
+  ],
+  "slots": [
+    { "selector": ".face-front", "desc": "前一个画面（outgoing），可换成 img/video" },
+    { "selector": ".face-back", "desc": "后一个画面（incoming），可换成 img/video" }
+  ]
+}

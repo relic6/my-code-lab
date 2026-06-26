@@ -1,0 +1,15 @@
+{
+  "id": "kinetic-typography",
+  "category": "title",
+  "source": "components/react/launching/Launching.tsx",
+  "description": "逐字母错峰点亮的动态标题，含点火冲击波与确定性上升尾焰。",
+  "defaultDurationInFrames": 90,
+  "fps": 30,
+  "params": [
+    { "key": "text", "type": "string", "default": "LAUNCHING" },
+    { "key": "stagger", "type": "number", "default": 0.08, "min": 0, "max": 0.3, "unit": "s" },
+    { "key": "accent", "type": "color", "default": "#22d3ee" },
+    { "key": "emberCount", "type": "number", "default": 14, "min": 0, "max": 40 },
+    { "key": "seed", "type": "number", "default": 7 }
+  ]
+}
