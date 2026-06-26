@@ -14,10 +14,10 @@ import { designTokens, noiseOverlay, useParallaxTilt } from '../_shared';
 type City = { name: string; coord: string; temp: number; sky: string; bgImage: string };
 
 const CITIES: City[] = [
-  { name: 'San Francisco', coord: '48.9° N · 122.9° W', temp: 21, sky: 'linear-gradient(135deg,#f6a585,#e98a9b 45%,#7b6fb0)', bgImage: '/digital-wall/city_sf.png' },
-  { name: 'Tokyo',         coord: '35.6° N · 139.6° E', temp: 27, sky: 'linear-gradient(135deg,#8ec5fc,#a18cd1 60%,#4b3f72)', bgImage: '/digital-wall/city_tokyo.png' },
-  { name: 'Reykjavík',     coord: '64.1° N · 21.9° W',  temp: 4,  sky: 'linear-gradient(135deg,#a1c4fd,#7ad7d0 55%,#3a6073)', bgImage: '/digital-wall/city_reykjavik.png' },
-  { name: 'Marrakech',     coord: '31.6° N · 8.0° W',   temp: 33, sky: 'linear-gradient(135deg,#f9d29d,#f6926b 50%,#8a4b53)', bgImage: '/digital-wall/city_marrakech.png' },
+  { name: 'San Francisco', coord: '48.9° N · 122.9° W', temp: 21, sky: 'linear-gradient(135deg,#f6a585,#e98a9b 45%,#7b6fb0)', bgImage: `${import.meta.env.BASE_URL}digital-wall/city_sf.png` },
+  { name: 'Tokyo',         coord: '35.6° N · 139.6° E', temp: 27, sky: 'linear-gradient(135deg,#8ec5fc,#a18cd1 60%,#4b3f72)', bgImage: `${import.meta.env.BASE_URL}digital-wall/city_tokyo.png` },
+  { name: 'Reykjavík',     coord: '64.1° N · 21.9° W',  temp: 4,  sky: 'linear-gradient(135deg,#a1c4fd,#7ad7d0 55%,#3a6073)', bgImage: `${import.meta.env.BASE_URL}digital-wall/city_reykjavik.png` },
+  { name: 'Marrakech',     coord: '31.6° N · 8.0° W',   temp: 33, sky: 'linear-gradient(135deg,#f9d29d,#f6926b 50%,#8a4b53)', bgImage: `${import.meta.env.BASE_URL}digital-wall/city_marrakech.png` },
 ];
 
 function useCountUp(target: number, ms = 700) {
@@ -96,7 +96,7 @@ export default function DigitalWall() {
             const path = ['city_sf.png', 'city_tokyo.png', 'city_reykjavik.png', 'city_marrakech.png'][i];
             return (
               <Tile key={`th${i}`} className={`tile thumb ${i === ci ? 'active' : ''}`} style={S(1, i + 1)} d={i}>
-                <span className="ph" style={{ backgroundImage: `url(/digital-wall/${path})` }} />
+                <span className="ph" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}digital-wall/${path})` }} />
                 <span className="bars"><i /><i /></span>
               </Tile>
             );
@@ -126,7 +126,7 @@ export default function DigitalWall() {
           {/* 人像 / 智能控制面板 */}
           <Tile className="tile portrait" style={S(5, 1, 2, 2)} d={5}>
             {ci === 0 ? (
-              <span className="ph" style={{ backgroundImage: 'url(/digital-wall/portrait_sf.png)' }} />
+              <span className="ph" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}digital-wall/portrait_sf.png)` }} />
             ) : ci === 1 ? (
               <div className="synth-avatar">
                 <div className="grid-bg" />
@@ -160,7 +160,7 @@ export default function DigitalWall() {
           <Tile className="tile video" style={S(3, 3, 2, 2)} d={7}>
             {ci === 0 ? (
               <>
-                <span className="ph" style={{ backgroundImage: 'url(/digital-wall/video_sf.png)' }} />
+                <span className="ph" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}digital-wall/video_sf.png)` }} />
                 <button className="play" aria-label="play"><i /></button>
               </>
             ) : ci === 1 ? (
@@ -203,7 +203,7 @@ export default function DigitalWall() {
           {/* 桥夜景 / 动态特效 */}
           <Tile className="tile bridge" style={S(2, 4)} d={10}>
             {ci === 0 ? (
-              <span className="ph" style={{ backgroundImage: 'url(/digital-wall/bridge_sf.png)' }} />
+              <span className="ph" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}digital-wall/bridge_sf.png)` }} />
             ) : ci === 1 ? (
               <div className="synth-highway">
                 <div className="horizon" />
