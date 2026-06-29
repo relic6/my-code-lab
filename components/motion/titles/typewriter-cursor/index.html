@@ -1,0 +1,64 @@
+<!doctype html>
+<!-- typewriter-cursor · 打字机逐字 + 光标闪烁（确定性，基于 token） -->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #stage { position: relative; width: 1920px; height: 1080px; display: grid; place-items: center;
+        background: #05070d; font-family: "JetBrains Mono", "Inter", monospace; }
+      .line { font-size: 96px; font-weight: 600; color: #e6f1ff; white-space: pre; }
+      .typed { color: #e6f1ff; }
+      .cursor { display: inline-block; width: 0.6ch; background: var(--c, #a3e635); color: transparent;
+        box-shadow: 0 0 12px var(--c, #a3e635); }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="typewriter-cursor" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div class="line"><span class="typed" id="typed"></span><span class="cursor" id="cursor">|</span></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- hf-core:start -->
+    <script>
+// hf-core.js · 动效模板共享核心（单一来源）
+// 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
+// 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
+//
+// 提供：
+//   hfSeeded(seed)      —— 确定性 PRNG（mulberry32），替代 Math.random 保逐帧一致
+//   hfProps(defaults)   —— 合并模板默认参数与 window.__props（AI/工程文件覆盖入口）
+window.hfSeeded = window.hfSeeded || function (seed) {
+  var a = (seed || 1) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+window.hfProps = function (defaults) {
+  return Object.assign({}, defaults || {}, window.__props || {});
+};
+    </script>
+    <!-- hf-core:end -->
+    <script>
+      const props = hfProps({ text: "> hello, world_", cps: 8, cursorColor: "#a3e635" });
+      document.getElementById("cursor").style.setProperty("--c", props.cursorColor);
+      const typed = document.getElementById("typed");
+      const full = props.text;
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // 逐字显现：用 onUpdate 按进度截取（确定性，取决于 timeline 时间）
+      const dur = full.length / props.cps;
+      const obj = { n: 0 };
+      tl.to(obj, { n: full.length, duration: dur, ease: "none",
+        onUpdate: () => { typed.textContent = full.slice(0, Math.floor(obj.n)); } }, 0);
+      // 光标闪烁（有限次 yoyo）
+      const blinks = Math.max(2, Math.round(dur + 1));
+      tl.to("#cursor", { opacity: 0, duration: 0.4, repeat: blinks * 2, yoyo: true, ease: "steps(1)" }, 0);
+      window.__timelines["typewriter-cursor"] = tl;
+    </script>
+    <script src="/components/motion/_engine/hf-preview.js"></script>
+  </body>
+</html>

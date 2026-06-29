@@ -1,0 +1,13 @@
+{
+  "id": "floating-bokeh",
+  "category": "particles",
+  "source": "components/react/glass/Glass.tsx",
+  "description": "多彩虚焦光斑缓慢漂移层，叠在背景上增加梦幻景深氛围。",
+  "defaultDurationInFrames": 240,
+  "fps": 30,
+  "params": [
+    { "key": "count", "type": "number", "default": 28, "min": 6, "max": 80 },
+    { "key": "speed", "type": "number", "default": 1, "min": 0.3, "max": 3 },
+    { "key": "seed", "type": "number", "default": 13 }
+  ]
+}

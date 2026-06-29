@@ -1,13 +1,10 @@
 <!doctype html>
-<!--
-  aurora-gradient · 极光流光背景
-  来源资产：components/react/glass/Glass.tsx（背景霓虹流光气泡）
-  HyperFrames 契约：paused GSAP 时间轴注册到 window.__timelines["aurora-gradient"]
--->
 <html lang="zh">
-  <head>
-    <meta charset="utf-8" />
-    <style>
+  <head><meta charset="utf-8" /></head>
+  <body>
+    <template>
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <style>
       * { margin: 0; box-sizing: border-box; }
       html, body { width: 100%; height: 100%; }
       #stage {
@@ -36,20 +33,15 @@
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       }
     </style>
-  </head>
-  <body>
-    <div id="stage" data-composition-id="aurora-gradient" data-start="0" data-duration="24" data-width="1920" data-height="1080">
+      <div id="stage" data-composition-id="aurora-gradient-0" data-start="0" data-width="1920" data-height="1080">
       <div class="blob b1"></div>
       <div class="blob b2"></div>
       <div class="blob b3"></div>
       <div class="blob b4"></div>
       <div class="grain"></div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <!-- hf-core:start -->
-    <script>
-// hf-core.js · 动效模板共享核心（单一来源）
+      <script>window.__props = {"speed":1.2};</script>
+      <script>// hf-core.js · 动效模板共享核心（单一来源）
 // 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
 // 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
 //
@@ -67,10 +59,8 @@ window.hfSeeded = window.hfSeeded || function (seed) {
 };
 window.hfProps = function (defaults) {
   return Object.assign({}, defaults || {}, window.__props || {});
-};
-    </script>
-    <!-- hf-core:end -->
-    <script>
+};</script>
+      <script>
       const props = hfProps({ speed: 1, loopSeconds: 12 });
       window.__timelines = window.__timelines || {};
       const d = props.loopSeconds / props.speed;
@@ -80,8 +70,8 @@ window.hfProps = function (defaults) {
       tl.to(".b2", { x: -200, y: 120, scale: 1.1, duration: d, yoyo: true, repeat: 1 }, 0);
       tl.to(".b3", { x: 180, y: -140, scale: 1.2, duration: d, yoyo: true, repeat: 1 }, 0);
       tl.to(".b4", { x: -160, y: 200, scale: 1.1, duration: d, yoyo: true, repeat: 1 }, 0);
-      window.__timelines["aurora-gradient"] = tl;
+      window.__timelines["aurora-gradient-0"] = tl;
     </script>
-    <script src="/components/motion/_engine/hf-preview.js"></script>
+    </template>
   </body>
 </html>

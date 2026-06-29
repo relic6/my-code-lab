@@ -1,0 +1,71 @@
+<!doctype html>
+<!-- spark-burst · 爆发式火花迸射（源：Launching 火花，事件点缀） -->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+        background: #05070d; display: grid; place-items: center; }
+      .origin { position: absolute; top: 50%; left: 50%; width: 0; height: 0; }
+      .spark { position: absolute; width: 8px; height: 8px; border-radius: 50%;
+        background: radial-gradient(circle, #fff, var(--c, #22d3ee) 50%, transparent 75%);
+        box-shadow: 0 0 12px var(--c, #22d3ee); will-change: transform, opacity; }
+      .flash { position: absolute; top: 50%; left: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px;
+        border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 70%); opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="spark-burst" data-start="0" data-duration="2" data-width="1920" data-height="1080">
+      <div class="flash" id="flash"></div>
+      <div class="origin" id="origin"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- hf-core:start -->
+    <script>
+// hf-core.js · 动效模板共享核心（单一来源）
+// 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
+// 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
+//
+// 提供：
+//   hfSeeded(seed)      —— 确定性 PRNG（mulberry32），替代 Math.random 保逐帧一致
+//   hfProps(defaults)   —— 合并模板默认参数与 window.__props（AI/工程文件覆盖入口）
+window.hfSeeded = window.hfSeeded || function (seed) {
+  var a = (seed || 1) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+window.hfProps = function (defaults) {
+  return Object.assign({}, defaults || {}, window.__props || {});
+};
+    </script>
+    <!-- hf-core:end -->
+    <script>
+      const props = hfProps({ count: 40, color: "#22d3ee", life: 1, seed: 3 });
+      const rnd = hfSeeded(props.seed);
+      const origin = document.getElementById("origin");
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // 闪光
+      tl.fromTo("#flash", { scale: 0.3, opacity: 0.9 }, { scale: 1.6, opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
+      // 放射火花
+      for (let i = 0; i < props.count; i++) {
+        const s = document.createElement("i"); s.className = "spark"; s.style.setProperty("--c", props.color);
+        origin.appendChild(s);
+        const ang = (i / props.count) * Math.PI * 2 + rnd() * 0.3;
+        const dist = 260 + rnd() * 420;
+        const dur = (0.7 + rnd() * 0.6) * props.life;
+        gsap.set(s, { x: 0, y: 0, scale: 0.6 + rnd() });
+        tl.to(s, { x: Math.cos(ang) * dist, y: Math.sin(ang) * dist, duration: dur, ease: "power3.out" }, 0);
+        tl.to(s, { opacity: 0, scale: 0.1, duration: dur, ease: "power1.in" }, 0);
+      }
+      window.__timelines["spark-burst"] = tl;
+    </script>
+    <script src="/components/motion/_engine/hf-preview.js"></script>
+  </body>
+</html>

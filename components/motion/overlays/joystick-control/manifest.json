@@ -1,0 +1,11 @@
+{
+  "id": "joystick-control",
+  "category": "overlay",
+  "source": "components/react/cool-joystick/CoolJoystick.tsx",
+  "description": "拟态摇杆控件叠层，演示方向推拉与弹性回中，适合录屏/演示。",
+  "defaultDurationInFrames": 150,
+  "fps": 30,
+  "params": [
+    { "key": "accent", "type": "color", "default": "#22d3ee" }
+  ]
+}

@@ -31,6 +31,82 @@ export type HtmlExample = {
 
 export type Example = ReactExample | HtmlExample;
 
+/**
+ * HyperFrames 动效模板（HTML 合成）演示。
+ * 预览通过 iframe 加载 index.html?preview=1：
+ * _engine/hf-preview.js 仅在带 ?preview 时循环播放并自适应缩放，渲染导出时不受影响。
+ */
+function motion(
+  id: string,
+  title: string,
+  dir: string,
+  description: string,
+  tags: string[],
+): HtmlExample {
+  const base = `components/motion/${dir}/${id}`;
+  return {
+    id: `motion-${id}`,
+    title,
+    category: 'html',
+    description,
+    tags: ['hyperframes', ...tags],
+    sourcePath: `${base}/index.html`,
+    previewUrl: `/${base}/index.html?preview=1`,
+  };
+}
+
+const motionExamples: HtmlExample[] = [
+  motion('intro-demo', '★ Intro Demo（合成示例）', 'examples',
+    '组合示例：极光背景 + 逐字标题，演示多个模块如何拼成一条完整片头。', ['demo', 'composite']),
+  // —— Titles 标题字幕 ——
+  motion('kinetic-typography', 'Kinetic Typography', 'titles',
+    '逐字母错峰点亮的动态标题，含点火冲击波与确定性上升尾焰。源：Launching。', ['title', 'text']),
+  motion('neon-title', 'Neon Title', 'titles',
+    '霓虹灯启辉式大标题：通电闪烁点亮 + 呼吸辉光 + 副标题字距展开。源：_shared 令牌。', ['title', 'neon']),
+  motion('glass-caption-bar', 'Glass Caption Bar', 'titles',
+    '底部毛玻璃字幕条，入场上滑 + 对角高光掠过。源：Glass。', ['title', 'glass', 'lower-third']),
+  motion('typewriter-cursor', 'Typewriter Cursor', 'titles',
+    '终端打字机逐字显现 + 发光光标确定性闪烁。', ['title', 'typewriter']),
+  motion('split-reveal', 'Split Reveal', 'titles',
+    '色块扫过遮罩揭示文字，支持横/纵轴。', ['title', 'mask']),
+  // —— Transitions 转场 ——
+  motion('glass-flip-wipe', 'Glass Flip Wipe', 'transitions',
+    '毛玻璃卡片 3D 翻转转场，含流光边框与高光掠过。源：Glass Flip。', ['transition', '3d']),
+  motion('digital-wall-shatter', 'Digital Wall Shatter', 'transitions',
+    '3D 瓷砖逐个翻飞淡出的马赛克碎裂转场。源：Digital Wall。', ['transition', 'shatter']),
+  motion('shockwave-dissolve', 'Shockwave Dissolve', 'transitions',
+    '中心双层冲击波扩散 + 模糊溶解切换。源：Launching。', ['transition', 'dissolve']),
+  motion('parallax-tilt-push', 'Parallax Tilt Push', 'transitions',
+    '前后画面以 3D 倾斜推拉错位交替，营造景深穿越。源：useParallaxTilt。', ['transition', 'parallax']),
+  motion('ripple-mask', 'Ripple Mask', 'transitions',
+    '同心圆涟漪扩散 + 圆形遮罩揭示。源：Animation Delay。', ['transition', 'ripple']),
+  // —— Overlays 叠层 / HUD ——
+  motion('hud-overlay', 'HUD Overlay', 'overlays',
+    '科技感 HUD：同心环、雷达扫描、角标与确定性数据读数联动。源：The Ark。', ['overlay', 'hud', 'sci-fi']),
+  motion('radar-sweep', 'Radar Sweep', 'overlays',
+    '可复用雷达扫描贴纸，扫描线旋转并点亮目标光点。源：The Ark。', ['overlay', 'radar']),
+  motion('data-readout-ticker', 'Data Readout Ticker', 'overlays',
+    '数值跳动数据面板，逐行入场并确定性递增。源：The Ark。', ['overlay', 'data']),
+  motion('joystick-control', 'Joystick Control', 'overlays',
+    '拟态摇杆控件叠层，演示方向推拉与弹性回中。源：Cool Joystick。', ['overlay', 'control']),
+  // —— Backgrounds 背景 ——
+  motion('aurora-gradient', 'Aurora Gradient', 'backgrounds',
+    '多色霓虹光斑缓慢漂移的极光渐变背景。源：Glass。', ['background', 'gradient']),
+  motion('starfield-parallax', 'Starfield Parallax', 'backgrounds',
+    '远/中/近三层星点不同速度滚动的视差星空。源：Launching。', ['background', 'parallax']),
+  motion('grid-perspective', 'Grid Perspective', 'backgrounds',
+    '合成波风格赛博透视网格地面 + 落日，网格无缝滚动。源：Digital Wall。', ['background', 'synthwave']),
+  motion('noise-vignette', 'Noise Vignette', 'backgrounds',
+    '可叠加的胶片颗粒噪声 + 暗角质感层。源：_shared。', ['background', 'grain']),
+  // —— Particles 粒子 ——
+  motion('glow-embers', 'Glow Embers', 'particles',
+    '确定性上升发光余烬粒子层。源：Launching。', ['particles', 'embers']),
+  motion('spark-burst', 'Spark Burst', 'particles',
+    '中心闪光 + 放射状火花迸射，做强调点缀。源：Launching。', ['particles', 'burst']),
+  motion('floating-bokeh', 'Floating Bokeh', 'particles',
+    '多彩虚焦光斑缓慢漂移层，增加梦幻景深。源：Glass。', ['particles', 'bokeh']),
+];
+
 export const examples: Example[] = [
   {
     id: 'launching',
@@ -96,4 +172,5 @@ export const examples: Example[] = [
     sourcePath: 'components/react/digital-wall/DigitalWall.tsx',
     Component: DigitalWall,
   },
+  ...motionExamples,
 ];

@@ -1,0 +1,12 @@
+{
+  "id": "noise-vignette",
+  "category": "background",
+  "source": "components/react/_shared/tokens.ts",
+  "description": "可叠加在任意片段之上的胶片颗粒噪声 + 暗角质感层。",
+  "defaultDurationInFrames": 120,
+  "fps": 30,
+  "params": [
+    { "key": "grain", "type": "number", "default": 0.08, "min": 0, "max": 0.25 },
+    { "key": "jitter", "type": "boolean", "default": true }
+  ]
+}

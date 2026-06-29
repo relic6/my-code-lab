@@ -1,0 +1,13 @@
+{
+  "id": "typewriter-cursor",
+  "category": "title",
+  "source": "new",
+  "description": "终端打字机效果：逐字显现 + 发光光标确定性闪烁。",
+  "defaultDurationInFrames": 150,
+  "fps": 30,
+  "params": [
+    { "key": "text", "type": "string", "default": "> hello, world_" },
+    { "key": "cps", "type": "number", "default": 8, "min": 2, "max": 30, "unit": "char/s" },
+    { "key": "cursorColor", "type": "color", "default": "#a3e635" }
+  ]
+}

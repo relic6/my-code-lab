@@ -1,0 +1,13 @@
+{
+  "id": "glass-caption-bar",
+  "category": "title",
+  "source": "components/react/glass/Glass.tsx",
+  "description": "底部毛玻璃下三分之一字幕条，含入场上滑与对角高光掠过。",
+  "defaultDurationInFrames": 120,
+  "fps": 30,
+  "params": [
+    { "key": "label", "type": "string", "default": "NOW PLAYING" },
+    { "key": "text", "type": "string", "default": "毛玻璃字幕条 · Glass Caption" },
+    { "key": "accent", "type": "color", "default": "#22d3ee" }
+  ]
+}

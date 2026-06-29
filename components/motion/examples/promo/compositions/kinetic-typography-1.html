@@ -1,14 +1,10 @@
 <!doctype html>
-<!--
-  kinetic-typography · 动态打字标题
-  来源资产：components/react/launching/Launching.tsx（逐字母点亮 + 尾焰 + 冲击波）
-  HyperFrames 契约：paused GSAP 时间轴注册到 window.__timelines["kinetic-typography"]
-  时长：约 3s（90 帧 @30fps）
--->
 <html lang="zh">
-  <head>
-    <meta charset="utf-8" />
-    <style>
+  <head><meta charset="utf-8" /></head>
+  <body>
+    <template>
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <style>
       :root {
         --neon-cyan: #22d3ee;
         --neon-amber: #f59e0b;
@@ -73,13 +69,10 @@
         z-index: 5;
       }
     </style>
-  </head>
-  <body>
-    <div
+      <div
       id="stage"
-      data-composition-id="kinetic-typography"
+      data-composition-id="kinetic-typography-1"
       data-start="0"
-      data-duration="3.5"
       data-width="1920"
       data-height="1080"
     >
@@ -88,11 +81,8 @@
       <h1 class="title" id="title"></h1>
       <div class="hf-noise"></div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <!-- hf-core:start -->
-    <script>
-// hf-core.js · 动效模板共享核心（单一来源）
+      <script>window.__props = {"text":"MY CODE LAB","accent":"#22d3ee"};</script>
+      <script>// hf-core.js · 动效模板共享核心（单一来源）
 // 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
 // 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
 //
@@ -110,10 +100,8 @@ window.hfSeeded = window.hfSeeded || function (seed) {
 };
 window.hfProps = function (defaults) {
   return Object.assign({}, defaults || {}, window.__props || {});
-};
-    </script>
-    <!-- hf-core:end -->
-    <script>
+};</script>
+      <script>
       // ——— 参数（可被 AI / 工程文件覆盖：window.__props） ———
       const props = hfProps({ text: "LAUNCHING", stagger: 0.08, accent: "#22d3ee", emberCount: 14, seed: 7 });
       document.documentElement.style.setProperty("--accent", props.accent);
@@ -168,8 +156,8 @@ window.hfProps = function (defaults) {
       // 收尾呼吸辉光
       tl.to(".title", { filter: "brightness(1.25)", duration: 0.5, yoyo: true, repeat: 1 }, 1.8);
 
-      window.__timelines["kinetic-typography"] = tl;
+      window.__timelines["kinetic-typography-1"] = tl;
     </script>
-    <script src="/components/motion/_engine/hf-preview.js"></script>
+    </template>
   </body>
 </html>

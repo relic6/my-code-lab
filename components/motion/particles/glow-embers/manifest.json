@@ -1,0 +1,14 @@
+{
+  "id": "glow-embers",
+  "category": "particles",
+  "source": "components/react/launching/Launching.tsx",
+  "description": "确定性上升发光余烬粒子层，可叠在任意场景前作氛围。",
+  "defaultDurationInFrames": 150,
+  "fps": 30,
+  "params": [
+    { "key": "count", "type": "number", "default": 60, "min": 10, "max": 200 },
+    { "key": "color", "type": "color", "default": "#f59e0b" },
+    { "key": "speed", "type": "number", "default": 1, "min": 0.3, "max": 3 },
+    { "key": "seed", "type": "number", "default": 9 }
+  ]
+}

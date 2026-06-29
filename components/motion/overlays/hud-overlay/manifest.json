@@ -1,0 +1,12 @@
+{
+  "id": "hud-overlay",
+  "category": "overlay",
+  "source": "components/react/the-ark/TheArk.tsx",
+  "description": "科技感 HUD 叠层：同心环、雷达扫描、角标与确定性数据读数联动。",
+  "defaultDurationInFrames": 150,
+  "fps": 30,
+  "params": [
+    { "key": "accent", "type": "color", "default": "#22d3ee" },
+    { "key": "scanSpeed", "type": "number", "default": 1, "min": 0.3, "max": 3 }
+  ]
+}

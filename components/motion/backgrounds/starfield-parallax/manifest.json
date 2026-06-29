@@ -1,0 +1,13 @@
+{
+  "id": "starfield-parallax",
+  "category": "background",
+  "source": "components/react/launching/Launching.tsx",
+  "description": "远/中/近三层星点以不同速度滚动的视差星空背景（确定性分布）。",
+  "defaultDurationInFrames": 240,
+  "fps": 30,
+  "params": [
+    { "key": "density", "type": "number", "default": 1, "min": 0.3, "max": 3 },
+    { "key": "speed", "type": "number", "default": 1, "min": 0.2, "max": 3 },
+    { "key": "seed", "type": "number", "default": 5 }
+  ]
+}

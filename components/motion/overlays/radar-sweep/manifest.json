@@ -1,0 +1,12 @@
+{
+  "id": "radar-sweep",
+  "category": "overlay",
+  "source": "components/react/the-ark/TheArk.tsx",
+  "description": "独立可复用的雷达扫描贴纸，扫描线旋转并点亮目标光点。",
+  "defaultDurationInFrames": 120,
+  "fps": 30,
+  "params": [
+    { "key": "color", "type": "color", "default": "#22d3ee" },
+    { "key": "revolutions", "type": "number", "default": 3, "min": 1, "max": 8 }
+  ]
+}

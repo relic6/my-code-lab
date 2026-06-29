@@ -1,0 +1,11 @@
+{
+  "id": "grid-perspective",
+  "category": "background",
+  "source": "components/react/digital-wall/DigitalWall.tsx",
+  "description": "合成波风格赛博透视网格地面 + 落日，网格向观察者无缝滚动。",
+  "defaultDurationInFrames": 240,
+  "fps": 30,
+  "params": [
+    { "key": "scrollSpeed", "type": "number", "default": 1, "min": 0.2, "max": 3 }
+  ]
+}

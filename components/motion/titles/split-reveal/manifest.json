@@ -1,0 +1,13 @@
+{
+  "id": "split-reveal",
+  "category": "title",
+  "source": "new",
+  "description": "色块扫过遮罩揭示文字，支持横向/纵向轴。",
+  "defaultDurationInFrames": 90,
+  "fps": 30,
+  "params": [
+    { "key": "text", "type": "string", "default": "REVEAL" },
+    { "key": "axis", "type": "enum", "default": "x", "options": ["x", "y"] },
+    { "key": "accent", "type": "color", "default": "#22d3ee" }
+  ]
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- joystick-control · 拟态手柄控件叠层（源：Cool Joystick / Cyber） -->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #stage { position: relative; width: 1920px; height: 1080px; display: grid; place-items: center;
+        background: radial-gradient(circle at 50% 40%, #141826, #05070d 70%); }
+      .base { position: relative; width: 460px; height: 460px; border-radius: 50%;
+        background: linear-gradient(145deg, #1a2030, #0c1019);
+        box-shadow: inset 8px 8px 24px rgba(0,0,0,0.7), inset -8px -8px 24px rgba(255,255,255,0.04),
+          0 30px 70px rgba(0,0,0,0.5); display: grid; place-items: center; }
+      .well { width: 300px; height: 300px; border-radius: 50%;
+        background: radial-gradient(circle at 40% 35%, #0a0d14, #05070d);
+        box-shadow: inset 10px 10px 30px rgba(0,0,0,0.8); display: grid; place-items: center; }
+      .stick { width: 170px; height: 170px; border-radius: 50%;
+        background: radial-gradient(circle at 38% 32%, #2b3242, #11151f);
+        box-shadow: 0 18px 30px rgba(0,0,0,0.6), inset -6px -6px 14px rgba(0,0,0,0.6), inset 6px 6px 14px rgba(255,255,255,0.06);
+        border: 2px solid rgba(34,211,238,0.25); will-change: transform; }
+      .glow { position: absolute; width: 30px; height: 30px; border-radius: 50%; top: 50%; left: 50%;
+        transform: translate(-50%,-50%); background: var(--accent, #22d3ee); filter: blur(6px); opacity: 0.8; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="joystick-control" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div class="base"><div class="well"><div class="stick" id="stick"><div class="glow"></div></div></div></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- hf-core:start -->
+    <script>
+// hf-core.js · 动效模板共享核心（单一来源）
+// 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
+// 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
+//
+// 提供：
+//   hfSeeded(seed)      —— 确定性 PRNG（mulberry32），替代 Math.random 保逐帧一致
+//   hfProps(defaults)   —— 合并模板默认参数与 window.__props（AI/工程文件覆盖入口）
+window.hfSeeded = window.hfSeeded || function (seed) {
+  var a = (seed || 1) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+window.hfProps = function (defaults) {
+  return Object.assign({}, defaults || {}, window.__props || {});
+};
+    </script>
+    <!-- hf-core:end -->
+    <script>
+      const props = hfProps({ accent: "#22d3ee" });
+      document.querySelector(".glow").style.background = props.accent;
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } });
+      tl.from(".base", { scale: 0.85, opacity: 0, duration: 0.6, ease: "back.out(1.5)" }, 0);
+      // 演示性方向推拉（弹性回中）
+      const seq = [[60,0],[60,-50],[-60,-30],[-50,60],[0,0]];
+      seq.forEach((p, i) => tl.to("#stick", { x: p[0], y: p[1], duration: 0.6, ease: "back.out(2)" }, 0.7 + i * 0.7));
+      window.__timelines["joystick-control"] = tl;
+    </script>
+    <script src="/components/motion/_engine/hf-preview.js"></script>
+  </body>
+</html>

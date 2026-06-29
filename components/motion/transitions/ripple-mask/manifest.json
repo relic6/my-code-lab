@@ -1,0 +1,18 @@
+{
+  "id": "ripple-mask",
+  "category": "transition",
+  "source": "components/react/animation-delay/animation-delay.tsx",
+  "description": "同心圆涟漪扩散 + 圆形遮罩揭示下一画面。",
+  "defaultDurationInFrames": 48,
+  "fps": 30,
+  "params": [
+    { "key": "center", "type": "string", "default": "50% 50%" },
+    { "key": "ringDelay", "type": "number", "default": 0.12, "min": 0, "max": 0.4, "unit": "s" },
+    { "key": "outSrc", "type": "image", "default": "", "desc": "前一画面图片 URL" },
+    { "key": "inSrc", "type": "image", "default": "", "desc": "后一画面图片 URL" }
+  ],
+  "slots": [
+    { "selector": ".outgoing", "desc": "前一画面" },
+    { "selector": ".incoming", "desc": "后一画面" }
+  ]
+}

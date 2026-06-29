@@ -1,0 +1,28 @@
+{
+  "id": "promo",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "scenes": [
+    {
+      "template": "backgrounds/aurora-gradient",
+      "from": 0, "duration": 12, "track": 0,
+      "props": { "speed": 1.2 }
+    },
+    {
+      "template": "titles/kinetic-typography",
+      "from": 0.5, "duration": 3.5, "track": 1,
+      "props": { "text": "MY CODE LAB", "accent": "#22d3ee" }
+    },
+    {
+      "template": "titles/glass-caption-bar",
+      "from": 4, "duration": 4, "track": 1,
+      "props": { "label": "MOTION SYSTEM", "text": "代码化 · 确定性 · 可批量", "accent": "#a3e635" }
+    },
+    {
+      "template": "overlays/hud-overlay",
+      "from": 8, "duration": 4, "track": 2,
+      "props": { "accent": "#ec4899", "scanSpeed": 1.4 }
+    }
+  ]
+}

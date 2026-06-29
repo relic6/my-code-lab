@@ -7,7 +7,9 @@
   "fps": 30,
   "params": [
     { "key": "axis", "type": "enum", "default": "y", "options": ["x", "y"] },
-    { "key": "duration", "type": "number", "default": 1.0, "min": 0.4, "max": 2, "unit": "s" }
+    { "key": "duration", "type": "number", "default": 1.0, "min": 0.4, "max": 2, "unit": "s" },
+    { "key": "frontSrc", "type": "image", "default": "", "desc": "前一画面图片 URL（空则用占位文字）" },
+    { "key": "backSrc", "type": "image", "default": "", "desc": "后一画面图片 URL" }
   ],
   "slots": [
     { "selector": ".face-front", "desc": "前一个画面（outgoing），可换成 img/video" },

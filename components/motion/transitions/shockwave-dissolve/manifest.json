@@ -1,0 +1,18 @@
+{
+  "id": "shockwave-dissolve",
+  "category": "transition",
+  "source": "components/react/launching/Launching.tsx",
+  "description": "中心双层冲击波扩散，配合模糊溶解切换两个画面。",
+  "defaultDurationInFrames": 48,
+  "fps": 30,
+  "params": [
+    { "key": "waveColor", "type": "color", "default": "#f59e0b" },
+    { "key": "softness", "type": "number", "default": 1, "min": 0, "max": 2 },
+    { "key": "outSrc", "type": "image", "default": "", "desc": "前一画面图片 URL" },
+    { "key": "inSrc", "type": "image", "default": "", "desc": "后一画面图片 URL" }
+  ],
+  "slots": [
+    { "selector": ".outgoing", "desc": "前一画面" },
+    { "selector": ".incoming", "desc": "后一画面" }
+  ]
+}

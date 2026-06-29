@@ -1,0 +1,16 @@
+{
+  "id": "data-readout-ticker",
+  "category": "overlay",
+  "source": "components/react/the-ark/TheArk.tsx",
+  "description": "数值跳动数据面板叠层，逐行入场并确定性递增到目标值。",
+  "defaultDurationInFrames": 120,
+  "fps": 30,
+  "params": [
+    { "key": "accent", "type": "color", "default": "#22d3ee" },
+    { "key": "rows", "type": "array", "default": [
+      { "k": "THROUGHPUT", "to": 9482, "unit": "ops/s" },
+      { "k": "LATENCY", "to": 42, "unit": "ms" },
+      { "k": "UPTIME", "to": 99, "unit": "%" }
+    ] }
+  ]
+}

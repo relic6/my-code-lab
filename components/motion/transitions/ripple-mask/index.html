@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- ripple-mask · 同心圆遮罩扩散转场（源：Animation Delay 同心 ripple） -->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #05070d; }
+      .scene { position: absolute; inset: 0; display: grid; place-items: center;
+        font-family: "Inter", system-ui, sans-serif; font-size: 130px; font-weight: 800; color: #fff; }
+      .outgoing { background: linear-gradient(135deg, #4c1d95, #0f172a); }
+      .incoming { position: absolute; inset: 0; background: linear-gradient(135deg, #0e7490, #0f172a);
+        clip-path: circle(0% at 50% 50%); }
+      .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 4px solid rgba(34,211,238,0.5);
+        transform: translate(-50%, -50%); width: 40px; height: 40px; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="ripple-mask" data-start="0" data-duration="1.6" data-width="1920" data-height="1080">
+      <div class="scene outgoing"><span>SCENE A</span></div>
+      <div class="incoming scene" id="incoming"><span>SCENE B</span></div>
+      <div class="ring" id="r1"></div>
+      <div class="ring" id="r2"></div>
+      <div class="ring" id="r3"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- hf-core:start -->
+    <script>
+// hf-core.js · 动效模板共享核心（单一来源）
+// 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
+// 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
+//
+// 提供：
+//   hfSeeded(seed)      —— 确定性 PRNG（mulberry32），替代 Math.random 保逐帧一致
+//   hfProps(defaults)   —— 合并模板默认参数与 window.__props（AI/工程文件覆盖入口）
+window.hfSeeded = window.hfSeeded || function (seed) {
+  var a = (seed || 1) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+window.hfProps = function (defaults) {
+  return Object.assign({}, defaults || {}, window.__props || {});
+};
+    </script>
+    <!-- hf-core:end -->
+    <script>
+      const props = hfProps({ center: "50% 50%", ringDelay: 0.12, outSrc: "", inSrc: "" });
+      function fillSlot(sel, src) {
+        if (!src) return;
+        const el = document.querySelector(sel);
+        el.style.backgroundImage = `url("${src}")`;
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+        const span = el.querySelector("span");
+        if (span) span.style.display = "none";
+      }
+      fillSlot(".outgoing", props.outSrc);
+      fillSlot(".incoming", props.inSrc);
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // 三层涟漪扩散
+      ["#r1", "#r2", "#r3"].forEach((r, i) => {
+        tl.fromTo(r, { scale: 0.4, opacity: 0.8 }, { scale: 70, opacity: 0, duration: 1.1, ease: "power2.out" }, i * props.ringDelay);
+      });
+      // 圆形遮罩揭示新画面
+      tl.fromTo("#incoming", { clipPath: `circle(0% at ${props.center})` },
+        { clipPath: `circle(150% at ${props.center})`, duration: 0.9, ease: "power2.inOut" }, 0.25);
+      window.__timelines["ripple-mask"] = tl;
+    </script>
+    <script src="/components/motion/_engine/hf-preview.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "id": "neon-title",
+  "category": "title",
+  "source": "components/react/_shared/tokens.ts",
+  "description": "霓虹灯启辉式大标题，含通电闪烁点亮、呼吸辉光与副标题字距展开。",
+  "defaultDurationInFrames": 120,
+  "fps": 30,
+  "params": [
+    { "key": "text", "type": "string", "default": "NEON" },
+    { "key": "sub", "type": "string", "default": "CODE · AS · MOTION" },
+    { "key": "color", "type": "color", "default": "#22d3ee" },
+    { "key": "flicker", "type": "boolean", "default": true }
+  ]
+}

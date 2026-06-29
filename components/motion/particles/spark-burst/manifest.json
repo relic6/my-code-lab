@@ -1,0 +1,14 @@
+{
+  "id": "spark-burst",
+  "category": "particles",
+  "source": "components/react/launching/Launching.tsx",
+  "description": "中心闪光 + 放射状火花迸射，适合做强调点缀（命中/点击/强拍）。",
+  "defaultDurationInFrames": 60,
+  "fps": 30,
+  "params": [
+    { "key": "count", "type": "number", "default": 40, "min": 8, "max": 120 },
+    { "key": "color", "type": "color", "default": "#22d3ee" },
+    { "key": "life", "type": "number", "default": 1, "min": 0.4, "max": 2 },
+    { "key": "seed", "type": "number", "default": 3 }
+  ]
+}

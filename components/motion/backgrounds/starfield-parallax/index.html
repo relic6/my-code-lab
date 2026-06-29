@@ -1,0 +1,72 @@
+<!doctype html>
+<!-- starfield-parallax · 多层星空视差背景（源：Launching 远近星点） -->
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+        background: linear-gradient(180deg, #0a0f1f 0%, #05070d 100%); }
+      .layer { position: absolute; inset: -10% 0; will-change: transform; }
+      .star { position: absolute; border-radius: 50%; background: #fff; }
+      .far .star { width: 2px; height: 2px; opacity: 0.35; }
+      .mid .star { width: 3px; height: 3px; opacity: 0.6; box-shadow: 0 0 6px #fff; }
+      .near .star { width: 4px; height: 4px; opacity: 0.9; box-shadow: 0 0 10px #fff; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="starfield-parallax" data-start="0" data-duration="8" data-width="1920" data-height="1080">
+      <div class="layer far" id="far"></div>
+      <div class="layer mid" id="mid"></div>
+      <div class="layer near" id="near"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- hf-core:start -->
+    <script>
+// hf-core.js · 动效模板共享核心（单一来源）
+// 由 _engine/build.mjs 内联进每个合成的 <!-- hf-core --> 标记块，
+// 保证输出仍是自包含 HTML（HyperFrames 渲染安全），同时只需在此处维护一次。
+//
+// 提供：
+//   hfSeeded(seed)      —— 确定性 PRNG（mulberry32），替代 Math.random 保逐帧一致
+//   hfProps(defaults)   —— 合并模板默认参数与 window.__props（AI/工程文件覆盖入口）
+window.hfSeeded = window.hfSeeded || function (seed) {
+  var a = (seed || 1) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+window.hfProps = function (defaults) {
+  return Object.assign({}, defaults || {}, window.__props || {});
+};
+    </script>
+    <!-- hf-core:end -->
+    <script>
+      const props = hfProps({ density: 1, speed: 1, seed: 5 });
+      const rnd = hfSeeded(props.seed);
+      function fill(id, count) {
+        const el = document.getElementById(id);
+        for (let i = 0; i < count; i++) {
+          const s = document.createElement("i"); s.className = "star";
+          s.style.left = (rnd() * 100) + "%"; s.style.top = (rnd() * 120) + "%";
+          el.appendChild(s);
+        }
+      }
+      fill("far", Math.round(120 * props.density));
+      fill("mid", Math.round(70 * props.density));
+      fill("near", Math.round(36 * props.density));
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+      // 不同速度上移制造视差（有限时长）
+      tl.to("#far", { y: 200 * props.speed, duration: 8 }, 0);
+      tl.to("#mid", { y: 420 * props.speed, duration: 8 }, 0);
+      tl.to("#near", { y: 720 * props.speed, duration: 8 }, 0);
+      window.__timelines["starfield-parallax"] = tl;
+    </script>
+    <script src="/components/motion/_engine/hf-preview.js"></script>
+  </body>
+</html>
