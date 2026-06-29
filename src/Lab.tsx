@@ -61,7 +61,7 @@ export default function Lab() {
                 全屏 ↗
               </Link>
             )}
-            <a className="source-link" href={`/${selected.sourcePath}`} target="_blank" rel="noreferrer">
+            <a className="source-link" href={`${import.meta.env.BASE_URL}${selected.sourcePath}`} target="_blank" rel="noreferrer">
               Source
             </a>
           </div>

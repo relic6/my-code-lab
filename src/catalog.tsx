@@ -51,7 +51,7 @@ function motion(
     description,
     tags: ['hyperframes', ...tags],
     sourcePath: `${base}/index.html`,
-    previewUrl: `/${base}/index.html?preview=1`,
+    previewUrl: `${import.meta.env.BASE_URL}${base}/index.html?preview=1`,
   };
 }
 
